@@ -1,5 +1,6 @@
 import React from 'react'
 import './App.css'
+import Card from './components/Card';
 
 interface ButtonProps {
   label?: string
@@ -18,12 +19,7 @@ const Button: React.FC<ButtonProps> = ({ label, children, disabled, className })
   );
 }
 
-const showCard = (card: number) => {
-  if (card === 0) return "Joker";
-  const mark = ["♥", "♦", "♣", "♠"];
-  const number = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
-  return mark[Math.floor((card-1) / 13)] + number[(card-1) % 13];
-}
+
 
 // let canSelectCard: { [key: number]: boolean } = {};
 // for (let i = 0; i <= 52; i++) {
@@ -145,21 +141,25 @@ function App() {
       <div className="opponent">
         相手のカード<br />
         {opponentCards.map((card) => (
-          <button key={card} className="button">
-            {isShowDown ? showCard(card) : "??"}
-          </button>
+          <Card 
+            key={card} 
+            card={card} 
+            isShowDown={isShowDown} 
+            owner='opponent' 
+          />
         ))}
       </div>
       <div className='player'>
         あなたのカード<br />
         {myCards.map((card, index) => (
-          <button 
-          key={card} 
-          className={`button ${selectedCard[index] ? 'selected' : ''} ${card <= 26 ? 'red' : 'black'}`} 
-          value={card} 
-          onClick={clickCard}>
-            {showCard(card)}
-          </button>
+          <Card 
+            key={card} 
+            card={card} 
+            isShowDown={true} 
+            isSelected={selectedCard[index]} 
+            owner='player' 
+            onClick={clickCard} 
+          />
         ))}
         <div>
           交換可能回数: {canChangeCard ? "1回" : "0回"}<br />
