@@ -113,6 +113,7 @@ function App() {
   const rankOfAHand = (cards: number[]) => {
     const suit = cards.map(card => Math.floor((card - 1) / 13));
     const num = cards.map(card => (card - 1) % 13 + 1).sort((a, b) => a - b);
+    console.log(num);
     let numCount: { [key: number]: number } = {};
     num.forEach(n => {
       if (n in numCount) {
@@ -128,15 +129,15 @@ function App() {
     const isFlush = suit.every(s => s === suit[0]);
     const isStraight = num.every((n, i) => i === 0 || n === num[i - 1] + 1) || (num[0] === 1 && num[1] === 10 && num[2] === 11 && num[3] === 12 && num[4] === 13);
     if (isFlush && isStraight && num[0] === 1) return [10,1]; // ロイヤルストレートフラッシュ
-    if (isFlush && isStraight) return [9,Math.max(...cards)]; // ストレートフラッシュ
+    if (isFlush && isStraight) return [9,Math.max(...num)]; // ストレートフラッシュ
     if (counts[0] === 4) return [8,Number(maxKey)]; // フォーカード
     if (counts[0] === 3 && counts[1] === 2) return [7,Number(maxKey)]; // フルハウス
-    if (isFlush) return [6,cards.includes(1)?1:Math.max(...cards)]; // フラッシュ
-    if (isStraight) return [5,cards.includes(1)?1:Math.max(...cards)]; // ストレート
+    if (isFlush) return [6,num.includes(1)?1:Math.max(...num)]; // フラッシュ
+    if (isStraight) return [5,num.includes(1)?1:Math.max(...num)]; // ストレート
     if (counts[0] === 3) return [4,Number(maxKey)]; // スリーカード
     if (counts[0] === 2 && counts[1] === 2) return [3,rank===1?1:rank]; // ツーペア
     if (counts[0] === 2) return [2,Number(maxKey)]; // ワンペア
-    return [1,cards.includes(1)?1:Math.max(...cards)]; // ハイカード
+    return [1,num.includes(1)?1:Math.max(...num)]; // ハイカード
   }
   return (
     <>
