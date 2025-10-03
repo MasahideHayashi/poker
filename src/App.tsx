@@ -1,25 +1,7 @@
 import React from 'react'
 import './App.css'
-import Card from './components/Card';
 import Hand from './components/Hand';
 import OpponentHand from './components/OpponentHand';
-
-interface ButtonProps {
-  label?: string
-  disabled?: boolean
-  className?: string
-  children?: React.ReactNode
-}
-
-const Button: React.FC<ButtonProps> = ({ label, children, disabled, className }) => {
-
-  return (
-    <button disabled={disabled} className={className}>
-      {label}
-      {children}
-    </button>
-  );
-}
 
 
 
@@ -61,7 +43,7 @@ function App() {
 
   // const myCards = [1, 0, 12, 52, 25];
   const [myCards, setMyCards] = React.useState(() => initialDraw.slice(0, 5));
-  const [opponentCards, setOpponentCards] = React.useState(() => initialDraw.slice(5, 10));
+  const [opponentCards] = React.useState(() => initialDraw.slice(5, 10));
   const [selectedCard, setSelectedCard] = React.useState([false, false, false, false, false]);
   const [canChangeCard, setCanChangeCard] = React.useState(true);
   const [isShowDown, setIsShowDown] = React.useState(false);
@@ -123,7 +105,7 @@ function App() {
       }
     });
     // maxKey: 一番多い枚数のカードの数字
-    const maxKey = Object.keys(numCount).reduce((a, b) => numCount[a] > numCount[b] ? a : b);
+    const maxKey = Object.keys(numCount).reduce((a:string, b:string) => numCount[Number(a)] > numCount[Number(b)] ? a : b);
     const rank = Number(maxKey);
     const counts = Object.values(numCount).sort((a, b) => b - a);
     const isFlush = suit.every(s => s === suit[0]);
