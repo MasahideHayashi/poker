@@ -1,6 +1,8 @@
 import React from 'react'
 import './App.css'
 import Card from './components/Card';
+import Hand from './components/Hand';
+import OpponentHand from './components/OpponentHand';
 
 interface ButtonProps {
   label?: string
@@ -119,26 +121,27 @@ function App() {
         numCount[n] = 1;
       }
     });
+    // maxKey: 一番多い枚数のカードの数字
     const maxKey = Object.keys(numCount).reduce((a, b) => numCount[a] > numCount[b] ? a : b);
     const rank = Number(maxKey);
     const counts = Object.values(numCount).sort((a, b) => b - a);
     const isFlush = suit.every(s => s === suit[0]);
     const isStraight = num.every((n, i) => i === 0 || n === num[i - 1] + 1) || (num[0] === 1 && num[1] === 10 && num[2] === 11 && num[3] === 12 && num[4] === 13);
     if (isFlush && isStraight && num[0] === 1) return [10,1]; // ロイヤルストレートフラッシュ
-    if (isFlush && isStraight) return [9,rank===1?1:rank]; // ストレートフラッシュ
-    if (counts[0] === 4) return [8,rank===1?1:rank]; // フォーカード
-    if (counts[0] === 3 && counts[1] === 2) return [7,rank===1?1:rank]; // フルハウス
-    if (isFlush) return [6,rank===1?1:rank]; // フラッシュ
-    if (isStraight) return [5,rank===1?1:rank]; // ストレート
-    if (counts[0] === 3) return [4,rank===1?1:rank]; // スリーカード
+    if (isFlush && isStraight) return [9,Math.max(...cards)]; // ストレートフラッシュ
+    if (counts[0] === 4) return [8,Number(maxKey)]; // フォーカード
+    if (counts[0] === 3 && counts[1] === 2) return [7,Number(maxKey)]; // フルハウス
+    if (isFlush) return [6,cards.includes(1)?1:Math.max(...cards)]; // フラッシュ
+    if (isStraight) return [5,cards.includes(1)?1:Math.max(...cards)]; // ストレート
+    if (counts[0] === 3) return [4,Number(maxKey)]; // スリーカード
     if (counts[0] === 2 && counts[1] === 2) return [3,rank===1?1:rank]; // ツーペア
-    if (counts[0] === 2) return [2,rank===1?1:rank]; // ワンペア
-    return [1,rank===1?1:rank]; // ハイカード
+    if (counts[0] === 2) return [2,Number(maxKey)]; // ワンペア
+    return [1,cards.includes(1)?1:Math.max(...cards)]; // ハイカード
   }
   return (
     <>
       <h1>Poker Game</h1>
-      <div className="opponent">
+      {/* <div className="opponent">
         相手のカード<br />
         {opponentCards.map((card) => (
           <Card 
@@ -148,24 +151,27 @@ function App() {
             owner='opponent' 
           />
         ))}
-      </div>
-      <div className='player'>
-        あなたのカード<br />
-        {myCards.map((card, index) => (
-          <Card 
-            key={card} 
-            card={card} 
-            isShowDown={true} 
-            isSelected={selectedCard[index]} 
-            owner='player' 
-            onClick={clickCard} 
-          />
-        ))}
-        <div>
-          交換可能回数: {canChangeCard ? "1回" : "0回"}<br />
-          <button onClick={changeCards}>交換</button>
-          <button onClick={showDown}>対戦</button>
-        </div>
+      </div> */}
+      <OpponentHand cards={opponentCards} isShowDown={isShowDown} />
+      {/* {myCards.map((card, index) => (
+        <Card 
+          key={card} 
+          card={card} 
+          isShowDown={true} 
+          isSelected={selectedCard[index]} 
+          owner='player' 
+          onClick={clickCard} 
+        />
+      ))} */}
+      <Hand 
+        cards={myCards} 
+        selectedCard={selectedCard} 
+        onClick={clickCard} 
+      />
+      <div>
+        交換可能回数: {canChangeCard ? "1回" : "0回"}<br />
+        <button onClick={changeCards}>交換</button>
+        <button onClick={showDown}>対戦</button>
       </div>
       {isShowDown && <div className="result">{resultMessage}</div>}
     </>
